@@ -4,9 +4,12 @@ namespace GuessNumber
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
-            var game = new Game();
+            using (var game1 = new Game1())
+                game1.Run();
+            var game = new Game2();
             var guessNumber=0;
             var inputStr = "";
             bool endGame = false;
