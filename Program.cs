@@ -7,9 +7,9 @@ namespace GuessNumber
         [STAThread]
         static void Main(string[] args)
         {
-            using (var game1 = new Game1())
+            using (var game1 = new GameGUI())
                 game1.Run();
-            var game = new Game2();
+            var game = new GuessNumberGame();
             var guessNumber=0;
             var inputStr = "";
             bool endGame = false;

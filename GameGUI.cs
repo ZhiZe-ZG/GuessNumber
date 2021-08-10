@@ -4,21 +4,29 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GuessNumber
 {
-    public class Game1 : Game
+    public class GameGUI : Game
     {
+        private GuessNumberGame _currentGame;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        public Game1()
+        private TextRender _textRender;
+
+        private string _HintText="Welcome to Guess Number!";
+
+        public GameGUI()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            // Text Render
+            _textRender = new TextRender();
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            _currentGame = new GuessNumberGame();
 
             base.Initialize();
         }
@@ -28,6 +36,7 @@ namespace GuessNumber
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            _textRender.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -37,6 +46,7 @@ namespace GuessNumber
 
             // TODO: Add your update logic here
 
+
             base.Update(gameTime);
         }
 
@@ -45,6 +55,9 @@ namespace GuessNumber
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            _textRender.Draw(_spriteBatch, new Vector2(0,0),_HintText);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
