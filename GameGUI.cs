@@ -12,9 +12,9 @@ namespace GuessNumber
         private SpriteBatch _spriteBatch;
 
         private TextRender _textRender;
-        private string _guessText="";
+        private string _guessText = "";
 
-        private string _hintText="Welcome to Guess Number!";
+        private string _hintText = "Welcome to Guess Number!";
 
         public GameGUI()
         {
@@ -47,7 +47,15 @@ namespace GuessNumber
                 Exit();
 
             // TODO: Add your update logic here
-            _currentGame.Update(Keyboard.GetState(),out _hintText,out _guessText);
+            if (!_currentGame.GameStop)
+            {
+                _currentGame.Update(Keyboard.GetState(), out _hintText, out _guessText);
+            }
+            else{
+                if(Keyboard.GetState().IsKeyDown(Keys.Enter)){
+                    _currentGame = new GameManager();
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -58,8 +66,8 @@ namespace GuessNumber
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _textRender.Draw(_spriteBatch, new Vector2(0,0),_hintText);
-            _textRender.Draw(_spriteBatch, new Vector2(0,20),$"Input your guess: {_guessText}");
+            _textRender.Draw(_spriteBatch, new Vector2(0, 0), _hintText);
+            _textRender.Draw(_spriteBatch, new Vector2(0, 50), _guessText);
             _spriteBatch.End();
 
             base.Draw(gameTime);

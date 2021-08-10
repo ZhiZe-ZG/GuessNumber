@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework.Input;
 
 namespace GuessNumber
@@ -7,7 +8,10 @@ namespace GuessNumber
         private GuessNumberGame _game = new GuessNumberGame();
         private string _inputBuffer = "";
         private bool[] _keyPressState = new bool[11] { false, false, false, false, false, false, false, false, false, false, false };
-        private bool _waitingInput = true;
+        private bool _enterPressState = false;
+        public bool GameStop {get;private set;}
+        private CompareResult? _lastGuessResult = null;
+        private int? _lastGuess = null;
 
         public GameManager()
         {
@@ -39,7 +43,7 @@ namespace GuessNumber
             {
                 _keyPressState[5] = true;
             }
-            if (keyboardState.IsKeyDown(Keys.D6) )
+            if (keyboardState.IsKeyDown(Keys.D6))
             {
                 _keyPressState[6] = true;
             }
@@ -152,12 +156,51 @@ namespace GuessNumber
                     }
                 }
             }
-            inputText = _inputBuffer;
-            hintText = "Welcome";
+            // handle enter key
+            if (keyboardState.IsKeyDown(Keys.Enter))
+            {
+                _enterPressState = true;
+            }
+            if (_enterPressState && keyboardState.IsKeyUp(Keys.Enter))
+            {
+                _enterPressState = false;
+                // compare number
+                try
+                {
+                    _lastGuess = Convert.ToInt32(_inputBuffer);
+                }
+                catch
+                {// handle input error
+                 // but only possible when the input string is too long
+                    inputText = $"Input your guess: {_inputBuffer}";
+                    hintText = "Your input isn't a valid number, try again:";
+                    return;
+                }
+                finally
+                {
+                    _inputBuffer = "";
+                }
+                if (!(_lastGuess is null))
+                {
+                    _lastGuessResult = _game.Compare(_lastGuess ?? 0);
+                }
+
+            }
+            // check game end
+            if (_lastGuessResult is CompareResult.Equal){
+                GameStop = true;
+                inputText = "";    
+                hintText = $"You Win!\n The hidden number is {_lastGuess}\n Press enter start another round.";
+                return;
+            }
+            // generate strings
+            inputText = $"Input your guess: {_inputBuffer}";
+            hintText = "Welcome to Guess Number!\n";
+            if (!(_lastGuess is null))
+            {
+                hintText = hintText + $"The number {_lastGuess} is {_lastGuessResult} than the hidden number.";
+            }
         }
-
-
-
 
     }
 }
