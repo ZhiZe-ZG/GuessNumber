@@ -1,14 +1,15 @@
 ﻿using System;
+using CommandLine;
 
 namespace GuessNumber
 {
+    // This is the entry point of the program. Without any command line parameters, the GUI version of the game will be launched. The command line version of the game can be started via parameters.
     class Program
     {
         [STAThread]
         static void Main(string[] args)
         {
-            using (var game1 = new GameGUI())
-                game1.Run();
+            Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed<CommandLineOptions>(Run);
             // var game = new GuessNumberGame();
             // var guessNumber=0;
             // var inputStr = "";
@@ -37,6 +38,26 @@ namespace GuessNumber
             // }
             // Console.WriteLine("Game end.");
             // Console.ReadKey();
+        }
+
+        public static void Run(CommandLineOptions options)
+        {
+            // Launch game by choosen mode.
+            LaunchMode launchMode;
+            if (Enum.TryParse<LaunchMode>(options.Mode, out launchMode))
+                switch (launchMode)
+                {
+                    case LaunchMode.GUI:
+                        using (var game = new GameGUI())
+                            game.Run();
+                        break;
+                    case LaunchMode.CLI:
+                        Console.WriteLine("CLI Mode");
+                        break;
+
+                }
+            else
+                Console.WriteLine("Unknown launch mode!");
         }
     }
 }
